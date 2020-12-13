@@ -65,7 +65,7 @@ app.get('/favourites', (req, res) => {
         if (!err) {
             results = [];
             for (item of items) {
-                results.push(item.name)
+                results.push(item)
             }
         }
         formRes(res, err, results);
