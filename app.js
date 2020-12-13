@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 8080
+const port = 5000
 const request = require('request');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
@@ -11,12 +11,14 @@ const baseURL = 'https://api.openweathermap.org/data/2.5/weather';
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/weather/city', (req, res) => {
+    console.log("GET /weather/city")
     request.get(`${baseURL}?q=${req.query.q}&appid=${apiKey}`, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
 
 app.get('/weather/coordinates', (req, res) => {
+    console.log("GET /weather/coordinates")
     request.get(`${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`, (err, response, body) => {
         return formRes(res, err, body);
     });
@@ -43,6 +45,7 @@ MongoClient.connect(urlMongo, (err, database) => {
 })
 
 app.post('/favourites', (req, res) => {
+    console.log("POST /weather/favourites")
     db = global.DB;
     a = db.collection('cities').insertOne(req.body, (err, results) => {
         formRes(res, err, err ? null : results.ops[0])
@@ -51,6 +54,7 @@ app.post('/favourites', (req, res) => {
 
 
 app.get('/favourites', (req, res) => {
+    console.log("GET /weather/favourites")
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('content-type', 'application/json; charset=utf-8');
     db = global.DB;
@@ -67,6 +71,7 @@ app.get('/favourites', (req, res) => {
 });
 
 app.delete('/favourites', (req, res) => {
+    console.log("DELETE /weather/favourites")
     db = global.DB;
     db.collection('cities').find({}).toArray((err, items) => {
         id = items[req.body.num]._id;
