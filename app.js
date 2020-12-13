@@ -33,10 +33,6 @@ MongoClient.connect(urlMongo, (err, database) => {
 app.get('/weather/city', (req, res) => {
     var url = encodeURI(`${baseURL}?q=${req.query.q}&appid=${apiKey}`)
     console.log(`GET ${url}`)
-    db = global.DB;
-    a = db.collection('cities').insertOne(req.body, (err, results) => {
-        formRes(res, err, err ? null : results.ops[0])
-    });
     request.get(url, (err, response, body) => {
         return formRes(res, err, body);
     });
