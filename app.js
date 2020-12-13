@@ -71,6 +71,7 @@ app.get('/favourites', (req, res) => {
             console.log(results)
             const ids = results.toString();
             const url = encodeURI(`${baseURL}group?id=${ids}&appid=${apiKey}&units=metric`);
+            console.log(url)
             request.get(url, (err, response, body) => {
                 return formRes(res, err, body);
             });
