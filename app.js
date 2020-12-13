@@ -11,7 +11,7 @@ const baseURL = 'https://api.openweathermap.org/data/2.5/weather';
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/weather/city', (req, res) => {
-    var url = `${baseURL}?q=${req.query.q}&appid=${apiKey}`
+    var url = encodeURI(`${baseURL}?q=${req.query.q}&appid=${apiKey}`)
     console.log(`GET ${url}`)
     request.get(url, (err, response, body) => {
         return formRes(res, err, body);
@@ -19,7 +19,7 @@ app.get('/weather/city', (req, res) => {
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    var url = `${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`
+    var url = encodeURI(`${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`)
     console.log(`GET ${url}`)
     request.get(url, (err, response, body) => {
         return formRes(res, err, body);
