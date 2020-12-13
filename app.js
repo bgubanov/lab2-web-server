@@ -64,6 +64,7 @@ app.get('/favourites', (req, res) => {
         results = null;
         if (!err) {
             results = [];
+            console.log(items)
             for (item of items) {
                 results.push(item.id)
             }
