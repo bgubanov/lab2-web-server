@@ -5,21 +5,23 @@ const request = require('request');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
 const urlMongo = 'mongodb+srv://mongo:mongo@cluster0.fpbxd.mongodb.net/<Cluster0>?retryWrites=true&w=majority'
-const apiKey = '315bdb45e49dcae9a4a9512b11a04583';
+const apiKey = 'd136e52c1f0eee76445085fa375a3f40';
 const baseURL = 'https://api.openweathermap.org/data/2.5/weather';
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/weather/city', (req, res) => {
-    console.log("GET /weather/city")
-    request.get(`${baseURL}?q=${req.query.q}&appid=${apiKey}`, (err, response, body) => {
+    var url = `${baseURL}?q=${req.query.q}&appid=${apiKey}`
+    console.log(`GET ${url}`)
+    request.get(url, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    console.log("GET /weather/coordinates")
-    request.get(`${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`, (err, response, body) => {
+    var url = `${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`
+    console.log(`GET ${url}`)
+    request.get(url, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
