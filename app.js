@@ -65,8 +65,9 @@ app.get('/favourites', (req, res) => {
         if (!err) {
             results = [];
             for (item of items) {
-                results.add(item.id)
+                results.push(item.id)
             }
+            console.log(results)
             const ids = results.toString();
             const url = encodeURI(`${baseURL}group?id=${ids}&appid=${apiKey}&units=metric`);
             request.get(url, (err, response, body) => {
