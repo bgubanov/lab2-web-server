@@ -31,7 +31,7 @@ MongoClient.connect(urlMongo, (err, database) => {
 })
 
 app.get('/weather/city', (req, res) => {
-    var url = encodeURI(`${baseURL}?q=${req.query.q}&appid=${apiKey}`)
+    var url = encodeURI(`${baseURL}?q=${req.query.q}&appid=${apiKey}&units=metric`)
     console.log(`GET ${url}`)
     request.get(url, (err, response, body) => {
         return formRes(res, err, body);
@@ -39,7 +39,7 @@ app.get('/weather/city', (req, res) => {
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    var url = encodeURI(`${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`)
+    var url = encodeURI(`${baseURL}?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}&units=metric`)
     console.log(`GET ${url}`)
     request.get(url, (err, response, body) => {
         return formRes(res, err, body);
@@ -65,10 +65,14 @@ app.get('/favourites', (req, res) => {
         if (!err) {
             results = [];
             for (item of items) {
-                results.push(item)
+                results.add(item.id)
             }
+            const ids = results.toString();
+            const url = encodeURI(`${baseURL}group?id=${ids}&appid=${apiKey}&units=metric`);
+            request.get(url, (err, response, body) => {
+                return formRes(res, err, body);
+            });
         }
-        formRes(res, err, results);
     });
 });
 
