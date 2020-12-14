@@ -106,7 +106,8 @@ app.delete('/favourites', (req, res) => {
         let id = req.query.id.toString();
         let details = {'id': id};
         db.collection('cities').deleteOne(details, (err, item) => {
-            const len = typeof item === "undefined" ? items.length : items.length - 1
+            const len = items.length - item.deletedCount
+            if (item.deletedCount === 0) err = "Database has no such object"
             formRes(res, err, len);
         });
     });
