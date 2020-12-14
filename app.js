@@ -31,29 +31,41 @@ MongoClient.connect(urlMongo, (err, database) => {
 })
 
 app.get('/weather/city', (req, res) => {
-    var url = encodeURI(`${baseURL}/weather?q=${req.query.q}&appid=${apiKey}&units=metric`)
+    const url = encodeURI(`${baseURL}/weather?q=${req.query.q}&appid=${apiKey}&units=metric`);
     console.log(`GET ${url}`)
-    request.get(url, (err, response, body) => {
-        db = global.DB;
-        const id = JSON.parse(`{"id": "${JSON.parse(body).id}"}`)
-        console.log(id)
-        a = db.collection('cities').insertOne(id);
-        return formRes(res, err, body);
-    });
+    return getWeather(req, res, url);
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    var url = encodeURI(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}&units=metric`)
-    console.log(`GET ${url}`)
-    request.get(url, (err, response, body) => {
-        db = global.DB;
-        const id = JSON.parse(`{"id": "${JSON.parse(body).id}"}`)
-        console.log(id)
-        a = db.collection('cities').insertOne(id);
+    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
 
+function getWeather(req, res, url) {
+    request.get(url, (err, response, body) => {
+        db = global.DB;
+        const idInt = JSON.parse(body).id.toString()
+        const id = JSON.parse(`{"id": "${idInt}"}`)
+        console.log(id)
+        db.collection('cities').find({}).toArray((err, items) => {
+            console.log(items)
+            for (item of items) {
+                if (item.id === idInt) {
+                    console.log(`Item with id=${id} is already in db`)
+                    return formRes(res, `Item with id=${idInt} is already in db`, null)
+                }
+            }
+            a = db.collection('cities').insertOne(id);
+            return formRes(res, err, body);
+        })
+
+    });
+}
+
+function justGetWeather(id) {
+    return formRes(res, err, body);
+}
 /*app.post('/favourites', (req, res) => {
     console.log("POST /weather/favourites")
     db = global.DB;
@@ -94,7 +106,8 @@ app.delete('/favourites', (req, res) => {
         let id = req.query.id.toString();
         let details = {'id': id};
         db.collection('cities').deleteOne(details, (err, item) => {
-            formRes(res, err, JSON.stringify('Note ' + id + ' deleted!'));
+            const len = typeof item === "undefined" ? items.length : items.length - 1
+            formRes(res, err, len);
         });
     });
 });
