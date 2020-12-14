@@ -61,7 +61,7 @@ function getWeather(req, res, url) {
                 return formRes(res, err, body);
             })
         }catch (e) {
-            return formRes(res, "No city with this name found", body);
+            return formRes(res, `No city with name "${req.query.q}" found`, body);
         }
 
     });
