@@ -45,20 +45,24 @@ app.get('/weather/coordinates', (req, res) => {
 function getWeather(req, res, url) {
     request.get(url, (err, response, body) => {
         db = global.DB;
-        const idInt = JSON.parse(body).id.toString()
-        const id = JSON.parse(`{"id": "${idInt}"}`)
-        console.log(id)
-        db.collection('cities').find({}).toArray((err, items) => {
-            console.log(items)
-            for (item of items) {
-                if (item.id === idInt) {
-                    console.log(`Item with id=${id} is already in db`)
-                    return formRes(res, `Item with id=${idInt} is already in db`, null)
+        try {
+            const idInt = JSON.parse(body).id.toString()
+            const id = JSON.parse(`{"id": "${idInt}"}`)
+            console.log(id)
+            db.collection('cities').find({}).toArray((err, items) => {
+                console.log(items)
+                for (item of items) {
+                    if (item.id === idInt) {
+                        console.log(`Item with id=${id} is already in db`)
+                        return formRes(res, `Item with id=${idInt} is already in db`, null)
+                    }
                 }
-            }
-            a = db.collection('cities').insertOne(id);
-            return formRes(res, err, body);
-        })
+                a = db.collection('cities').insertOne(id);
+                return formRes(res, err, body);
+            })
+        }catch (e) {
+            return formRes(res, "No city with this name found", body);
+        }
 
     });
 }
