@@ -120,7 +120,7 @@ function formRes(res, err, ok) {
     if (err) {
         return res.status(500).send({message: err});
     }
-    return res.send(ok);
+    return res.send(`${ok}`);
 }
 
 function urlRes(res, err) {
