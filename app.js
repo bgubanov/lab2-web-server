@@ -37,7 +37,7 @@ app.get('/weather/city', (req, res) => {
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`, (err, response, body) => {
+    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}&units=metric`, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
