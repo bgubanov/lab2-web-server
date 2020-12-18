@@ -10,6 +10,8 @@ const baseURL = 'https://api.openweathermap.org/data/2.5';
 
 app.use(bodyParser.urlencoded({extended: true}));
 
+const defaultParams = `appid=${apiKey}&units=metric&lang=ru`
+
 MongoClient.connect(urlMongo, (err, database) => {
     if (err) {
         return console.log(err)
@@ -31,13 +33,13 @@ MongoClient.connect(urlMongo, (err, database) => {
 })
 
 app.get('/weather/city', (req, res) => {
-    const url = encodeURI(`${baseURL}/weather?q=${req.query.q}&appid=${apiKey}&units=metric`);
+    const url = encodeURI(`${baseURL}/weather?q=${req.query.q}&${defaultParams}`);
     console.log(`GET ${url}`)
     return getWeather(req, res, url);
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}&units=metric`, (err, response, body) => {
+    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&${defaultParams}`, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
@@ -95,7 +97,7 @@ app.get('/favourites', (req, res) => {
             }
             console.log(results)
             const ids = results.toString();
-            const url = encodeURI(`${baseURL}/group?id=${ids}&appid=${apiKey}&units=metric`);
+            const url = encodeURI(`${baseURL}/group?id=${ids}&${defaultParams}`);
             console.log(url)
             request.get(url, (err, response, body) => {
                 return formRes(res, err, body);
