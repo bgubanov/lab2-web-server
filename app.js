@@ -37,7 +37,7 @@ app.get('/weather/city', (req, res) => {
 });
 
 app.get('/weather/coordinates', (req, res) => {
-    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}`, (err, response, body) => {
+    request.get(`${baseURL}/weather?lat=${req.query.lat}&lon=${req.query.lon}&appid=${apiKey}&units=metric`, (err, response, body) => {
         return formRes(res, err, body);
     });
 });
@@ -112,7 +112,8 @@ app.delete('/favourites', (req, res) => {
         let id = req.query.id.toString();
         let details = {'id': id};
         db.collection('cities').deleteOne(details, (err, item) => {
-            const len = typeof item === "undefined" ? items.length : items.length - 1
+            const len = items.length - item.deletedCount
+            if (item.deletedCount === 0) err = "Этот город не был добавлен в избранное"
             formRes(res, err, len);
         });
     });
@@ -125,7 +126,7 @@ function formRes(res, err, ok) {
     if (err) {
         return res.status(500).send({message: err});
     }
-    return res.send(ok);
+    return res.send(`${ok}`);
 }
 
 function urlRes(res, err) {
