@@ -71,9 +71,6 @@ function getWeather(req, res, url) {
     });
 }
 
-function justGetWeather(id) {
-    return formRes(res, err, body);
-}
 /*app.post('/favourites', (req, res) => {
     console.log("POST /weather/favourites")
     db = global.DB;
@@ -90,11 +87,8 @@ app.get('/favourites', (req, res) => {
     db.collection('cities').find({}).toArray((err, items) => {
         results = null;
         if (!err) {
-            results = [];
             console.log(items)
-            for (item of items) {
-                results.push(item.id)
-            }
+            let results = items.map((it) => it.id)
             console.log(results)
             const ids = results.toString();
             const url = encodeURI(`${baseURL}/group?id=${ids}&${defaultParams}`);
@@ -102,6 +96,10 @@ app.get('/favourites', (req, res) => {
             request.get(url, (err, response, body) => {
                 return formRes(res, err, body);
             });
+        }
+        else {
+            let error = 'Ошибка с базой данных'
+            return formRes(res, error, {})
         }
     });
 });
@@ -114,7 +112,7 @@ app.delete('/favourites', (req, res) => {
         let id = req.query.id.toString();
         let details = {'id': id};
         db.collection('cities').deleteOne(details, (err, item) => {
-            const len = items.length - item.deletedCount
+            const len = items.length - 1
             if (item.deletedCount === 0) err = "Этот город не был добавлен в избранное"
             formRes(res, err, len);
         });
