@@ -66,7 +66,7 @@ function getWeather(req, res, url) {
             })
         } catch (e) {
             const error = `Город "${req.query.q}" не найден`
-            return formRes(res, error, null)
+            return res.status(404).send({message: error});
         }
     });
 }
